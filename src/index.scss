@@ -87,6 +87,7 @@ body {
   }
 }
 .cart-item {
+
   border: 1px solid #f3f3f3;
   border-radius: 20px;
   overflow: hidden;
@@ -117,4 +118,5 @@ body {
 }
 .items {
   flex: 1;
+  overflow: auto;
 }

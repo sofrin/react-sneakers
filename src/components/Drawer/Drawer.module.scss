@@ -1,5 +1,5 @@
 .overlay {
-  display: none;
+  display: flex;
   position: absolute;
   left: 0;
   top: 0;
@@ -25,4 +25,9 @@
       font-size: 24px;
     }
   }
+}
+
+.cardItemImg{
+     height: 70px;
+     width: 70px;
 }
