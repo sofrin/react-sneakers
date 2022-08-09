@@ -6,38 +6,38 @@ export default function Drawer({ onRemove, onClose, items = [] }) {
   return (
     <div className={styles.overlay}>
       <div className={styles.drawer}>
-        <h2 className="mb-30 d-flex justify-between ">
+        <h2 className='mb-30 d-flex justify-between '>
           Корзина
           <img
             onClick={onClose}
-            className="removeBtn cu-p"
-            src="/img/btn-remove.svg"
-            alt="remove"
+            className='removeBtn cu-p'
+            src='/img/btn-remove.svg'
+            alt='remove'
           />
         </h2>
-        <div className="items">
+        <div className='items'>
           {items.map((obj) => (
             <div
               key={obj.imageURL}
-              className="cart-item d-flex align-center mb-20"
+              className='cart-item d-flex align-center mb-20'
             >
-              <div className="cartItemImg">
-                <img height={70} width={70} src={obj.imageURL} alt="" />
+              <div className='cartItemImg'>
+                <img height={70} width={70} src={obj.imageURL} alt='' />
               </div>
-              <div className="mr-20 flex">
-                <p className="mb-5">{obj.title}</p>
+              <div className='mr-20 flex'>
+                <p className='mb-5'>{obj.title}</p>
                 <b>{obj.price}</b>
               </div>
               <img
-                onClick={() => onRemove(obj)}
-                className="removeBtn"
-                src="/img/btn-remove.svg"
-                alt="remove"
+                onClick={() => onRemove(obj.id)}
+                className='removeBtn'
+                src='/img/btn-remove.svg'
+                alt='remove'
               />
             </div>
           ))}
         </div>
-        <div className="cartTotalBlock">
+        <div className='cartTotalBlock'>
           <ul>
             <li>
               <span>Итого:</span>
@@ -50,8 +50,8 @@ export default function Drawer({ onRemove, onClose, items = [] }) {
               <b>1074 руб.</b>
             </li>
           </ul>
-          <button className="greenButton">
-            Оформить заказ. <img src="/img/arrow.svg" alt="arrow" />
+          <button className='greenButton'>
+            Оформить заказ. <img src='/img/arrow.svg' alt='arrow' />
           </button>
         </div>
       </div>
