@@ -8,7 +8,24 @@ export default function Home({
   onChangeSearchInput,
   onAdToFavorite,
   onAdToCard,
+  cardItems,
+  isLoading,
 }) {
+  const renderItems = () => {
+    const filteredItems = items.filter((item) =>
+      item.title.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+    return (isLoading ? [...Array(8)] : filteredItems).map((item, index) => (
+      <Card
+        key={index}
+        onPlus={(obj) => onAdToCard(obj)}
+        onFavorite={(obj) => onAdToFavorite(obj)}
+        added={cardItems.some((obj) => Number(obj.id) === Number(item.id))}
+        loading={isLoading}
+        {...item}
+      />
+    ));
+  };
   return (
     <div className='content p-40'>
       <div className='d-flex align-center mb-40 justify-between'>
@@ -32,22 +49,7 @@ export default function Home({
           />
         </div>
       </div>
-      <div className='d-flex flex-wrap  ml-20'>
-        {items
-          .filter((item) =>
-            item.title.toLowerCase().includes(searchValue.toLowerCase()),
-          )
-          .map((item) => (
-            <Card
-              key={item.id}
-              title={item.title}
-              price={item.price}
-              imageURL={item.imageURL}
-              onPlus={(obj) => onAdToCard(obj)}
-              onFavorite={(obj) => onAdToFavorite(obj)}
-            />
-          ))}
-      </div>
+      <div className='d-flex flex-wrap  ml-20'>{renderItems()}</div>
     </div>
   );
 }
