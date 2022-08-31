@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import FavoritesPage from './pages/Favorites';
+import AppContext from './context';
 
 function App() {
   const [items, setItems] = useState([]);
@@ -62,11 +63,11 @@ function App() {
   };
   const cartOpener = () => {
     setCardOpened(true);
-    axios
-      .get('https://62eba861705264f263dd8ccf.mockapi.io/cart')
-      .then((res) => {
-        setCardItems(res.data);
-      });
+    //     axios
+    //       .get('https://62eba861705264f263dd8ccf.mockapi.io/cart')
+    //       .then((res) => {
+    //         setCardItems(res.data);
+    //       });
   };
   useEffect(() => {
     async function fetchData() {
@@ -87,43 +88,46 @@ function App() {
     }
     fetchData();
   }, []);
-
+  const isItemAdded = (id) => {
+    console.log(id);
+    return cardItems.some((obj) => Number(obj.id) === Number(id));
+  };
   return (
-    <div className='wrapper clear'>
-      {cardOpened && (
-        <Drawer
-          items={cardItems}
-          onRemove={onDeletefromCart}
-          onClose={() => setCardOpened(false)}
-        />
-      )}
-      <Header onClickCart={cartOpener} />
-      <Routes>
-        <Route
-          path='/'
-          exact
-          element={
-            <Home
-              cardItems={cardItems}
-              items={items}
-              searchValue={searchValue}
-              setsearchValue={setsearchValue}
-              onChangeSearchInput={onChangeSearchInput}
-              onAdToFavorite={onAdToFavorite}
-              onAdToCard={onAdToCard}
-              isLoading={isLoading}
-            />
-          }
-        />
-        <Route
-          path='/favorites'
-          exact
-          element={
-            <FavoritesPage items={favorites} onAdToFavorite={onAdToFavorite} />
-          }
-        />
-      </Routes>
-    </div>
+    <AppContext.Provider value={{ items, cardItems, favorites, isItemAdded }}>
+      <div className='wrapper clear'>
+        {cardOpened && (
+          <Drawer
+            items={cardItems}
+            onRemove={onDeletefromCart}
+            onClose={() => setCardOpened(false)}
+          />
+        )}
+        <Header onClickCart={cartOpener} />
+        <Routes>
+          <Route
+            path='/'
+            exact
+            element={
+              <Home
+                cardItems={cardItems}
+                items={items}
+                searchValue={searchValue}
+                setsearchValue={setsearchValue}
+                onChangeSearchInput={onChangeSearchInput}
+                onAdToFavorite={onAdToFavorite}
+                onAdToCard={onAdToCard}
+                isLoading={isLoading}
+              />
+            }
+          />
+          <Route
+            path='/favorites'
+            exact
+            element={<FavoritesPage onAdToFavorite={onAdToFavorite} />}
+          />
+        </Routes>
+      </div>
+    </AppContext.Provider>
   );
 }
 

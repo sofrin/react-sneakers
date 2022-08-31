@@ -8,7 +8,7 @@ export default function Home({
   onChangeSearchInput,
   onAdToFavorite,
   onAdToCard,
-  cardItems,
+
   isLoading,
 }) {
   const renderItems = () => {
@@ -20,7 +20,6 @@ export default function Home({
         key={index}
         onPlus={(obj) => onAdToCard(obj)}
         onFavorite={(obj) => onAdToFavorite(obj)}
-        added={cardItems.some((obj) => Number(obj.id) === Number(item.id))}
         loading={isLoading}
         {...item}
       />
