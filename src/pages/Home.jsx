@@ -8,7 +8,6 @@ export default function Home({
   onChangeSearchInput,
   onAdToFavorite,
   onAdToCard,
-
   isLoading,
 }) {
   const renderItems = () => {
