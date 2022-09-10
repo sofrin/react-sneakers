@@ -10,9 +10,9 @@ import AppContext from './context';
 
 function App() {
   const [items, setItems] = useState([]);
-  const [cardItems, setCardItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const [searchValue, setsearchValue] = useState('');
-  const [cardOpened, setCardOpened] = useState(false);
+  const [cartOpened, setCartOpened] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -23,7 +23,7 @@ function App() {
   const onDeletefromCart = (id) => {
     axios.delete(`https://62eba861705264f263dd8ccf.mockapi.io/cart/${id}`);
     console.log(id);
-    setCardItems((prev) => prev.filter((item) => item.id !== id));
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
   const onAdToFavorite = async (obj) => {
     try {
@@ -46,29 +46,29 @@ function App() {
   };
   const onAdToCard = (obj) => {
     try {
-      if (cardItems.find((item) => item.id === obj.id)) {
+      if (cartItems.find((item) => item.id === obj.id)) {
         axios.delete(
           `https://62eba861705264f263dd8ccf.mockapi.io/cart/${obj.id}`,
         );
-        setCardItems((prev) => prev.filter((item) => item.id !== obj.id));
+        setCartItems((prev) => prev.filter((item) => item.id !== obj.id));
       } else {
         console.log(obj);
 
         axios.post('https://62eba861705264f263dd8ccf.mockapi.io/cart', obj);
-        setCardItems((prev) => [...prev, obj]);
+        setCartItems((prev) => [...prev, obj]);
       }
     } catch (error) {
       console.log(error);
     }
   };
   const cartOpener = () => {
-    setCardOpened(true);
+    setCartOpened(true);
     //     axios
     //       .get('https://62eba861705264f263dd8ccf.mockapi.io/cart')
     //       .then((res) => {
-    //         setCardItems(res.data);
+    //         setCartItems(res.data);
     //       });
-  };
+  };;
   useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
@@ -82,7 +82,7 @@ function App() {
         'https://62eba861705264f263dd8ccf.mockapi.io/items',
       );
       setIsLoading(false);
-      setCardItems(cartResponse.data);
+      setCartItems(cartResponse.data);
       setFavorites(favoritesResponse.data);
       setItems(itemsResponse.data);
     }
@@ -90,16 +90,25 @@ function App() {
   }, []);
   const isItemAdded = (id) => {
     console.log(id);
-    return cardItems.some((obj) => Number(obj.id) === Number(id));
+    return cartItems.some((obj) => Number(obj.id) === Number(id));
   };
   return (
-    <AppContext.Provider value={{ items, cardItems, favorites, isItemAdded }}>
+    <AppContext.Provider
+      value={{
+        items,
+        cartItems,
+        favorites,
+        isItemAdded,
+        setCartOpened,
+        setCartItems,
+      }}
+    >
       <div className='wrapper clear'>
-        {cardOpened && (
+        {cartOpened && (
           <Drawer
-            items={cardItems}
+            items={cartItems}
             onRemove={onDeletefromCart}
-            onClose={() => setCardOpened(false)}
+            onClose={() => setCartOpened(false)}
           />
         )}
         <Header onClickCart={cartOpener} />
@@ -109,7 +118,7 @@ function App() {
             exact
             element={
               <Home
-                cardItems={cardItems}
+                cartItems={cartItems}
                 items={items}
                 searchValue={searchValue}
                 setsearchValue={setsearchValue}

@@ -1,8 +1,36 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import styles from "./Drawer.module.scss";
+import React, { useContext, useState } from 'react';
+import axios from 'axios';
+import AppContext from '../../context';
+import Info from '../info';
+import styles from './Drawer.module.scss';
 
 export default function Drawer({ onRemove, onClose, items = [] }) {
+  const [isOrderComplete, setIsOrderComplete] = useState(false);
+  const [orderID, setOrderID] = useState(null);
+  const [isLoading, setisLoading] = useState(false);
+  const { setCartItems, cartItems } = useContext(AppContext);
+
+  const onClickOrder = async () => {
+    try {
+      setisLoading(true);
+      const { data } = await axios.post(
+        'https://62eba861705264f263dd8ccf.mockapi.io/orders',
+        { items: cartItems },
+      );
+      await axios.put(
+        'https://62eba861705264f263dd8ccf.mockapi.io/items/1/cart/1',
+        {},
+      );
+      setOrderID(data.id);
+      setIsOrderComplete(true);
+      setCartItems([]);
+    } catch (error) {
+      alert(error);
+    }
+    setisLoading(false);
+  };
+
   return (
     <div className={styles.overlay}>
       <div className={styles.drawer}>
@@ -16,7 +44,7 @@ export default function Drawer({ onRemove, onClose, items = [] }) {
           />
         </h2>
         {items.length > 0 ? (
-          <div>
+          <div className='d-flex flex-column flex'>
             <div className={styles.items}>
               {items.map((obj) => (
                 <div
@@ -57,29 +85,29 @@ export default function Drawer({ onRemove, onClose, items = [] }) {
                   <b>1074 руб. </b>
                 </li>
               </ul>
-              <button className='greenButton'>
+              <button
+                disabled={isLoading}
+                onClick={onClickOrder}
+                className='greenButton'
+              >
                 Оформить заказ <img src='/img/arrow.svg' alt='Arrow' />
               </button>
             </div>
           </div>
         ) : (
-          <div className='cartEmpty d-flex align-center justify-center flex-column flex'>
-            <img
-              className='mb-20'
-              width='120px'
-              height='120px'
-              src='/img/empty-cart.jpg'
-              alt='Empty'
-            />
-            <h2>Корзина пустая</h2>
-            <p className='opacity-6'>
-              Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.
-            </p>
-            <button onClick={onClose} className='greenButton'>
-              <img src='/img/arrow.svg' alt='Arrow' />
-              Вернуться назад
-            </button>
-          </div>
+          <Info
+            title={isOrderComplete ? 'Заказ оформлен' : 'Корзина пустая'}
+            description={
+              isOrderComplete
+                ? `Ваш заказ #${orderID} скоро будет передан курьерской доставке`
+                : 'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'
+            }
+            image={
+              isOrderComplete
+                ? '/img/complete-order.jpg'
+                : '/img/empty-cart.jpg'
+            }
+          />
         )}
       </div>
     </div>
