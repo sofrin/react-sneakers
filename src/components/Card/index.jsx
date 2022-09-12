@@ -12,18 +12,18 @@ export default function Card({
   onPlus,
   onFavorite,
   favorited = false,
-  //   added = false,
   loading = false,
 }) {
   const { isItemAdded } = React.useContext(AppContext);
 
   const [isLiked, setIsLiked] = React.useState(favorited);
+  const obj = { id, parentId: id, imageURL, title, price };
   const onClickPlus = () => {
-    onPlus({ id, imageURL, title, price });
+    onPlus(obj);
   };
   const onClickFavorite = () => {
     setIsLiked(!isLiked);
-    onFavorite({ id, imageURL, title, price });
+    onFavorite(obj);
   };
   return (
     <div className={styles.card}>
@@ -56,17 +56,19 @@ export default function Card({
           <div className='d-flex justify-between align-center'>
             <div className='d-flex flex-column'>
               <span>Цена:</span>
-              <b>{price}</b>
+              <b>{price} руб.</b>
             </div>
 
-            <img
-              className={styles.plus}
-              onClick={onClickPlus}
-              src={
-                isItemAdded(id) ? '/img/btn-cheked.svg' : '/img/btn-plus.svg'
-              }
-              alt=''
-            />
+            {onPlus && (
+              <img
+                className={styles.plus}
+                onClick={onClickPlus}
+                src={
+                  isItemAdded(id) ? '/img/btn-cheked.svg' : '/img/btn-plus.svg'
+                }
+                alt=''
+              />
+            )}
           </div>
         </>
       )}

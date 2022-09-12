@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import AppContext from '../../context';
 import Info from '../info';
 import styles from './Drawer.module.scss';
+import { useCart } from '../../hooks/useCart';
 
-export default function Drawer({ onRemove, onClose, items = [] }) {
+export default function Drawer({ onRemove, onClose, items = [], opened }) {
   const [isOrderComplete, setIsOrderComplete] = useState(false);
   const [orderID, setOrderID] = useState(null);
   const [isLoading, setisLoading] = useState(false);
-  const { setCartItems, cartItems } = useContext(AppContext);
+  const { cartItems, setCartItems, totalPrice } = useCart();
 
   const onClickOrder = async () => {
     try {
@@ -32,7 +32,7 @@ export default function Drawer({ onRemove, onClose, items = [] }) {
   };
 
   return (
-    <div className={styles.overlay}>
+    <div className={`${styles.overlay} ${opened ? styles.overlayVisible : ''}`}>
       <div className={styles.drawer}>
         <h2 className='mb-30 d-flex justify-between '>
           Корзина
@@ -77,12 +77,12 @@ export default function Drawer({ onRemove, onClose, items = [] }) {
                 <li>
                   <span>Итого:</span>
                   <div></div>
-                  <b>21 498 руб. </b>
+                  <b>{totalPrice} руб. </b>
                 </li>
                 <li>
                   <span>Налог 5%:</span>
                   <div></div>
-                  <b>1074 руб. </b>
+                  <b>{totalPrice * 0.05} руб. </b>
                 </li>
               </ul>
               <button
